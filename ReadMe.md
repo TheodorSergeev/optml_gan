@@ -20,7 +20,13 @@ torch==1.11.0torchvision==0.12.0
 
 ## How to run:
 
-If running locally you can create an anaconda environement with the following commands. First create the environment :
+If you want to run the code directly from google colab :
+
+<a href="https://colab.research.google.com/github/TheodorSergeev/optml_gan/blob/main/dcgan.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
+TODO : the colab notebook can work on it's own ( check for paths issues, could just use os.makedir to create all the paths we need)
+
+If you are running the code locally you can create an anaconda environement with the following commands. First create the environment:
 
 ```
 conda create -y -n optmlgan python=3.7.13 scipy pandas numpy matplotlib
@@ -46,9 +52,11 @@ If you do not have a gpu :
 conda install pytorch torchvision torchaudio cpuonly -c pytorch
 ```
 
+TO DO : still didnt put all packages
+
 # Contents of the Project:
 
-Folder structure : 
+Folder structure :
 
 - `data`
 - `generated_data`
