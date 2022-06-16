@@ -4,7 +4,13 @@
 
 Optimization for machine learning mini-project
 
+## Main findings
+
+TO DO : maybe a plot from the report here if it's pretty?
+
 ## Links:
+
+...
 
 ## Requirements:
 
