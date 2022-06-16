@@ -26,6 +26,7 @@ jupyterlab=3.3.2
 nb_conda_kernels=2.3.1
 ipywidgets=7.7.0
 sk-learn=1.1.1
+tqdm=4.62.3
 ```
 An Nvidia GPU or access to Google Colab to speed up training.
 

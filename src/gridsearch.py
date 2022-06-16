@@ -43,10 +43,6 @@ def run_experiment(ngpu, device, dataset, workers,
 
     stats = gan_training.train()
 
-    if plot:
-        plot_loss(G_losses, D_losses, save=False)
-        plot_realvsfake(dataloader, device, img_list, save=False)
-
     return stats, dataloader, netG, netD
 
 
