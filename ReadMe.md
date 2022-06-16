@@ -27,7 +27,7 @@ nb_conda_kernels=2.3.1
 ipywidgets=7.7.0
 sk-learn=1.1.1
 ```
-
+A Nvidia GPU or access to google colab to speed up training.
 ## How to run:
 
 If you want to run the code directly from google colab :
