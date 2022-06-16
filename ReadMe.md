@@ -25,6 +25,7 @@ pandas=1.3.5
 jupyterlab=3.3.2
 nb_conda_kernels=2.3.1
 ipywidgets=7.7.0
+sk-learn=1.1.1
 ```
 
 ## How to run:
@@ -49,6 +50,7 @@ Then activate the environment:
 conda activate optmlgan
 conda install jupyterlab nb_conda_kernels
 conda install -c conda-forge ipywidgets
+pip install -U scikit-learn
 ```
 
 If you have a gpu :
