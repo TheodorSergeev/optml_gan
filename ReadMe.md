@@ -34,9 +34,10 @@ An Nvidia GPU or access to Google Colab to speed up training.
 
 If you want to run the code directly from Google Colab:
 
-- Either click here: <a href="https://colab.research.google.com/github/TheodorSergeev/optml_gan/blob/main/dcgan.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> **TODO:** check this notebook can work on it's own (check for paths issues, could just use os.makedir to create all the paths we need) -- Also check if need to add MIT license or other since we have cifar and MINST in the repo (like the entire dataset) or just delete them from the repo
+- Click on <a href="https://colab.research.google.com/github/TheodorSergeev/optml_gan/blob/main/gan.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> for  `gan.ipynb`
+- Click on <a href="https://colab.research.google.com/github/TheodorSergeev/optml_gan/blob/main/gan.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> for `metrics.ipynb`
 - Or open [this Google Drive folder](https://drive.google.com/drive/folders/17c7PySAorwY0P0VVEdMLnEwskU3yQMyT?usp=sharing)
- and open `dcgan.ipynb` in Google Colab
+ and open `gan.ipynb` or `metrics.ipynb` in Google Colab, the goold drive folder contains our saved experiments so that you wouldn't be required to train the models again (the gridsearch takes multiple hours even on a P100 GPU)
 
 
 

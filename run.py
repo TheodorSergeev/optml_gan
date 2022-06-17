@@ -95,4 +95,13 @@ if __name__ == '__main__':
                     shuffle, num_epochs, plot, lrD, lrG, beta1, nc, nz, loss_name, '', save_stats, create_dir,
                     iter_per_epoch_dis, iter_per_epoch_gen, grad_penalty_coef,
                     save_epochs, save_models, momentumD, momentumG, optimizer_name, PATH)
+
+    img_list = stats['img_list']
+    G_losses = stats['G_losses']
+    D_losses = stats['D_losses']
+
+    save_path = PATH + 'img/real_vs_fake'
+    plot_loss(G_losses, D_losses, save_path, save=True)
+    plot_realvsfake(dataloader, device, img_list, PATH + 'img/loss', save=True)
+
     pass
