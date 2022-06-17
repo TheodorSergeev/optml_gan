@@ -19,13 +19,14 @@ from .architectures import *
 from .model import *
 
 # Adapted from :
-# https://www.kaggle.com/code/ibtesama/gan-in-pytorch-with-fid/notebook  
+# https://www.kaggle.com/code/ibtesama/gan-in-pytorch-with-fid/notebook
 # this didn't use batches, it was limited to one batch
-# https://github.com/mseitzer/pytorch-fid   
+# https://github.com/mseitzer/pytorch-fid
 # https://github.com/mseitzer/pytorch-fid/blob/master/src/pytorch_fid/fid_score.py
 # this was deigned to be run from the command line, and to take images in a folder as input
 # we wanted to be able to run this from a samples created during runtime, rather than in
 # a folder
+
 
 class InceptionV3(nn.Module):
     """Pretrained InceptionV3 network returning feature maps"""
@@ -141,6 +142,7 @@ class InceptionV3(nn.Module):
 
         return outp
 
+
 def get_activations(isreal, dataloader, num_samples, model, device, dims=2048):
     """Calculates the activations of the pool_3 layer for all images.
     Params:
@@ -166,7 +168,8 @@ def get_activations(isreal, dataloader, num_samples, model, device, dims=2048):
         # if isreal:
         # batch = batch
         batch = batch[0].to(device)
-        batch = batch.repeat_interleave(repeats=3, dim=1) # broadcast the 1 grayscale channel to 3 channels
+        # broadcast the 1 grayscale channel to 3 channels
+        batch = batch.repeat_interleave(repeats=3, dim=1)
         with torch.no_grad():
             pred = model(batch)[0]
 
@@ -178,10 +181,11 @@ def get_activations(isreal, dataloader, num_samples, model, device, dims=2048):
         pred = pred.squeeze(3).squeeze(2).cpu().numpy()
 
         pred_arr[start_idx:start_idx + pred.shape[0]] = pred
-        
+
         start_idx = start_idx + pred.shape[0]
 
     return pred_arr
+
 
 def calculate_activation_statistics(isreal, dataloader, num_samples, model, device, dims=2048
                                     ):
@@ -202,6 +206,7 @@ def calculate_activation_statistics(isreal, dataloader, num_samples, model, devi
     mu = np.mean(act, axis=0)
     sigma = np.cov(act, rowvar=False)
     return mu, sigma
+
 
 def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
     """Numpy implementation of the Frechet Distance.
@@ -242,11 +247,12 @@ def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
     return (diff.dot(diff) + np.trace(sigma1) +
             np.trace(sigma2) - 2 * tr_covmean)
 
-def calculate_frechet(device, real_dataloader, fake_dataloader, inception_model, num_samples) :
+
+def calculate_frechet(device, real_dataloader, fake_dataloader, inception_model, num_samples):
     mu_1, std_1 = calculate_activation_statistics(True, real_dataloader, num_samples,
-         inception_model, device)
+                                                  inception_model, device)
     mu_2, std_2 = calculate_activation_statistics(False, fake_dataloader, num_samples,
-         inception_model, device)
+                                                  inception_model, device)
 
     """get Frechet distance"""
     fid_value = calculate_frechet_distance(mu_1, std_1, mu_2, std_2)
@@ -256,35 +262,40 @@ def calculate_frechet(device, real_dataloader, fake_dataloader, inception_model,
 def sample_gen_dataset(n_samples, batch_size, netG, nz, workers, device, shuffle=True):
 
     with torch.no_grad():
-      noise = torch.randn(n_samples, nz, 1, 1, device=device)
-      fake = netG(noise)
+        noise = torch.randn(n_samples, nz, 1, 1, device=device)
+        fake = netG(noise)
     fake = fake.to(device)
     fake_dataset = torch.utils.data.TensorDataset(fake)
     fake_dataloader = torch.utils.data.DataLoader(fake_dataset, batch_size=batch_size,
-                                         shuffle=shuffle, num_workers=workers)
+                                                  shuffle=shuffle, num_workers=workers)
     return fake_dataloader
+
 
 def calculate_fid(num_samples, real_dataloader, batch_size_eval, device, inception_model, netG, nz, workers):
     with torch.no_grad():
         # sample the generator (and output a dataset from that)
-        fake_dataloader = sample_gen_dataset(num_samples, batch_size_eval, netG, nz, workers, device, shuffle=True)
+        fake_dataloader = sample_gen_dataset(
+            num_samples, batch_size_eval, netG, nz, workers, device, shuffle=True)
 
         t_frechet = time.time()
-        frechet_dist = calculate_frechet(device, real_dataloader, fake_dataloader, inception_model, num_samples) 
-        print('frechet dist:', frechet_dist,'| time to calculate :',time.time()-t_frechet,'s')
-        
+        frechet_dist = calculate_frechet(
+            device, real_dataloader, fake_dataloader, inception_model, num_samples)
+        print('frechet dist:', frechet_dist,
+              '| time to calculate :', time.time()-t_frechet, 's')
+
     return frechet_dist
 
 # fid scores
 
+
 def get_fid_scores(ngpu, num_samples, real_dataloader, batch_size_eval, device, inception_model, nc, nz, workers,
-                    list_paths, # paths_adam paths_sgd paths_rmsprop
-                    which_iterations = [50,100], #[0,50,100,150,200,250,290]
-                    fix_extension = False,
-                    calculate_frechet_bool = True,
-                    which_lrs = [1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7],
-                    ):
-    
+                   list_paths,  # paths_adam paths_sgd paths_rmsprop
+                   which_iterations=[50, 100],  # [0,50,100,150,200,250,290]
+                   fix_extension=False,
+                   calculate_frechet_bool=True,
+                   which_lrs=[1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7],
+                   ):
+
     all_lr_scores = {}
 
     for path in list_paths:
@@ -303,26 +314,29 @@ def get_fid_scores(ngpu, num_samples, real_dataloader, batch_size_eval, device, 
         if float(lr) in which_lrs:
             for file in os.listdir(path+'/models/'):
                 # print(file[:7])
-                    if file[:7] == 'model_G':
-                        # print(file)
-                        # split because sometimes file has extension .zip sometimes doesn't
-                        number = int(file[8:].split('.')[0]) 
-                        # print(number)
-                        if number in which_iterations: # epochs
-                            # score_list[float(lr)] = number
-                            
-                            print(number)
-                            # print(path+'/models/'+file)
-                            # print(len(file[8:].split('.')))
-                            if fix_extension: # if files are not in .zip extension, use this
-                                if len(file[8:].split('.'))==1: 
-                                    print(path+'/models/'+file)
-                                    os.rename(path+'/models/'+file, path+'/models/'+file+'.zip') 
+                if file[:7] == 'model_G':
+                    # print(file)
+                    # split because sometimes file has extension .zip sometimes doesn't
+                    number = int(file[8:].split('.')[0])
+                    # print(number)
+                    if number in which_iterations:  # epochs
+                        # score_list[float(lr)] = number
 
-                            if calculate_frechet_bool:
-                                netG = load_G(ngpu, nc, nz, Generator, path+'/models/'+file,device)
-                                frechet_dist = calculate_fid(num_samples, real_dataloader, batch_size_eval, device, inception_model, netG, nz, workers)
-                                score_list.append(frechet_dist)
+                        print(number)
+                        # print(path+'/models/'+file)
+                        # print(len(file[8:].split('.')))
+                        if fix_extension:  # if files are not in .zip extension, use this
+                            if len(file[8:].split('.')) == 1:
+                                print(path+'/models/'+file)
+                                os.rename(path+'/models/'+file,
+                                          path+'/models/'+file+'.zip')
+
+                        if calculate_frechet_bool:
+                            netG = load_G(ngpu, nc, nz, Generator,
+                                          path+'/models/'+file, device)
+                            frechet_dist = calculate_fid(
+                                num_samples, real_dataloader, batch_size_eval, device, inception_model, netG, nz, workers)
+                            score_list.append(frechet_dist)
             all_lr_scores[float(lr)] = score_list
 
     return all_lr_scores
