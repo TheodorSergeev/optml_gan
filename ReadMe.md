@@ -2,13 +2,13 @@
 
 ## Description
 
-Generative adversarial networks (GANs) are a powerful tool for creating synthetic data that has been successfully used for tasks such as high fidelity image generatrion. However, GANs are notoriously difficult to train as the process is unstable, involves a lot of hyperparameters, and there are little to no theoretical guarantees for convergence. In this work, we systematically study how the choice of an optimiser and initial learning rate affects the speed and stability of GAN training with Wasserstein loss on the MNIST dataset. We show that the choice of an appropriate initial learning rate can have a bigger impact on the end quality of the generated images, while the choice of an appropriate optimiser can help to avoid loss explosions and make the training more stable.
-
-## Main findings
-
 <p align="center">
   <img width="800" height="350" src="https://github.com/TheodorSergeev/optml_gan/blob/aa8ebb5822128ca39377c1f96254e47774828f6d/img/readme_img.png">
 </p>
+
+Generative adversarial networks (GANs) are a powerful tool for creating synthetic data that has been successfully used for tasks such as high fidelity image generatrion. However, GANs are notoriously difficult to train as the process is unstable, involves a lot of hyperparameters, and there are little to no theoretical guarantees for convergence. In this work, we systematically study how the choice of an optimiser and initial learning rate affects the speed and stability of GAN training with Wasserstein loss on the MNIST dataset. We show that the choice of an appropriate initial learning rate can have a bigger impact on the end quality of the generated images, while the choice of an appropriate optimiser can help to avoid loss explosions and make the training more stable.
+
+
 
 ## Requirements
 
