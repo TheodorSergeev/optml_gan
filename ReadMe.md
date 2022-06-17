@@ -38,7 +38,7 @@ If you want to run the code directly from Google Colab:
 - Click on <a href="https://colab.research.google.com/github/TheodorSergeev/optml_gan/blob/main/metrics.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> for `metrics.ipynb`
 - Or open [this Google Drive folder](https://drive.google.com/drive/folders/17c7PySAorwY0P0VVEdMLnEwskU3yQMyT?usp=sharing)
  and open `gan.ipynb` or `metrics.ipynb` in Google Colab, the goold drive folder contains our saved experiments so that you wouldn't be required to train the models again (the gridsearch takes multiple hours even on a P100 GPU)
-
+- use the provided `run.py` file to run an experiment where a single gan is trained and outputs some plots into the img directory
 
 
 If you are running the code locally, you can create an Anaconda environment with the following commands. First create the environment:
