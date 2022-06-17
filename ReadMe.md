@@ -6,7 +6,9 @@ Optimization for Machine Learning Mini-Project
 
 ## Main findings
 
-TO DO : maybe a plot from the report here if it's pretty?
+<p align="center">
+  <img width="460" height="300" src="https://github.com/TheodorSergeev/optml_gan/blob/aa8ebb5822128ca39377c1f96254e47774828f6d/img/readme_img.png">
+</p>
 
 ## Requirements
 
