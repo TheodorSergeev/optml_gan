@@ -5,7 +5,7 @@ from src.architectures import Generator, Discriminator
 from src.training import init_optimizers, Training
 from src.visualisation import plot_loss, plot_realvsfake
 from src.utils import set_seeds
-
+from src.utils import count_parameters
 
 def set_loss_params(loss_name):
     iter_dis, iter_gen, grad_penalty_coef = 1, 1, 0.0
@@ -21,11 +21,14 @@ def run_experiment(ngpu, device, dataset, workers,
                    loss_name, experiment_prefix, save_stats, create_dir,
                    iter_per_epoch_dis, iter_per_epoch_gen, grad_penalty_coef,
                    save_epochs, save_models, momentumD, momentumG, optimizer_name,
-                   PATH, img_list=None, G_losses=None, D_losses=None):
+                   PATH, count_params=False):
 
     netG = init_net(Generator(ngpu, nc, nz), device, ngpu)
+    
     netD = init_net(Discriminator(ngpu, nc, loss_name), device, ngpu)
-
+    if count_params:
+        print('Generator parameters', count_parameters(netG))
+        print('Discriminator parameters', count_parameters(netD))
     # Create the dataloader
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
                                              shuffle=True, num_workers=workers)
@@ -51,7 +54,7 @@ def grid_search(ngpu, device, dataset, workers,
                 num_epochs_list, loss_name_list, optimizer_name_list,
                 beta1_list, lr_list, momentums_list, plot, save_stats, create_dir,
                 save_epochs, save_models, manualSeed, nc, nz,
-                PATH, img_list=None, G_losses=None, D_losses=None):
+                PATH):
 
     for batch_size in batch_size_list:
         for shuffle in shuffle_list:
@@ -85,4 +88,4 @@ def grid_search(ngpu, device, dataset, workers,
                                                                                    loss_name, experiment_prefix, save_stats, create_dir,
                                                                                    iter_per_epoch_dis, iter_per_epoch_gen, grad_penalty_coef,
                                                                                    save_epochs, save_models, momentumD, momentumG, optimizer_name,
-                                                                                   PATH, img_list, G_losses, D_losses)
+                                                                                   PATH)
