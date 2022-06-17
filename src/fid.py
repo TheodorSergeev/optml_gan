@@ -6,6 +6,8 @@ import numpy as np
 from torch.nn.functional import adaptive_avg_pool2d
 from scipy import linalg
 import time
+import os
+
 try:
     from tqdm import tqdm
 except ImportError:
@@ -13,11 +15,17 @@ except ImportError:
     def tqdm(x):
         return x
 
+from .architectures import *
+from .model import *
+
 # Adapted from :
 # https://www.kaggle.com/code/ibtesama/gan-in-pytorch-with-fid/notebook  
+# this didn't use batches, it was limited to one batch
 # https://github.com/mseitzer/pytorch-fid   
 # https://github.com/mseitzer/pytorch-fid/blob/master/src/pytorch_fid/fid_score.py
-
+# this was deigned to be run from the command line, and to take images in a folder as input
+# we wanted to be able to run this from a samples created during runtime, rather than in
+# a folder
 
 class InceptionV3(nn.Module):
     """Pretrained InceptionV3 network returning feature maps"""
@@ -138,14 +146,11 @@ def get_activations(isreal, dataloader, num_samples, model, device, dims=2048):
     Params:
     -- files       : List of image files paths
     -- model       : Instance of inception model
-    -- batch_size  : Batch size of images for the model to process at once.
-                     Make sure that the number of samples is a multiple of
-                     the batch size, otherwise some samples are ignored. This
-                     behavior is retained to match the original FID score
-                     implementation.
+
     -- dims        : Dimensionality of features returned by Inception
     -- device      : Device to run calculations
-    -- num_workers : Number of parallel dataloader workers
+    -- num_samples : ...
+
     Returns:
     -- A numpy array of dimension (num images, dims) that contains the
        activations of the given tensor when feeding inception with the
@@ -184,12 +189,8 @@ def calculate_activation_statistics(isreal, dataloader, num_samples, model, devi
     Params:
 
     -- model       : Instance of inception model
-    -- batch_size  : The images numpy array is split into batches with
-                     batch size batch_size. A reasonable batch size
-                     depends on the hardware.
     -- dims        : Dimensionality of features returned by Inception
     -- device      : Device to run calculations
-    -- num_workers : Number of parallel dataloader workers
     Returns:
     -- mu    : The mean over samples of the activations of the pool_3 layer of
                the inception model.
@@ -273,3 +274,55 @@ def calculate_fid(num_samples, real_dataloader, batch_size_eval, device, incepti
         print('frechet dist:', frechet_dist,'| time to calculate :',time.time()-t_frechet,'s')
         
     return frechet_dist
+
+# fid scores
+
+def get_fid_scores(ngpu, num_samples, real_dataloader, batch_size_eval, device, inception_model, nc, nz, workers,
+                    list_paths, # paths_adam paths_sgd paths_rmsprop
+                    which_iterations = [50,100], #[0,50,100,150,200,250,290]
+                    fix_extension = False,
+                    calculate_frechet_bool = True,
+                    which_lrs = [1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6, 1e-7],
+                    ):
+    
+    all_lr_scores = {}
+
+    for path in list_paths:
+        folder = path[17:]
+        print(folder)
+        param_list = folder.split('_')
+
+        optimizer_name = param_list[0]
+        loss_name = param_list[3][:-4]
+        lr = param_list[4][3:]
+        # print()
+        print(optimizer_name, lr)
+        score_list = []
+        print(lr)
+        print(float(lr))
+        if float(lr) in which_lrs:
+            for file in os.listdir(path+'/models/'):
+                # print(file[:7])
+                    if file[:7] == 'model_G':
+                        # print(file)
+                        # split because sometimes file has extension .zip sometimes doesn't
+                        number = int(file[8:].split('.')[0]) 
+                        # print(number)
+                        if number in which_iterations: # epochs
+                            # score_list[float(lr)] = number
+                            
+                            print(number)
+                            # print(path+'/models/'+file)
+                            # print(len(file[8:].split('.')))
+                            if fix_extension: # if files are not in .zip extension, use this
+                                if len(file[8:].split('.'))==1: 
+                                    print(path+'/models/'+file)
+                                    os.rename(path+'/models/'+file, path+'/models/'+file+'.zip') 
+
+                            if calculate_frechet_bool:
+                                netG = load_G(ngpu, nc, nz, Generator, path+'/models/'+file,device)
+                                frechet_dist = calculate_fid(num_samples, real_dataloader, batch_size_eval, device, inception_model, netG, nz, workers)
+                                score_list.append(frechet_dist)
+            all_lr_scores[float(lr)] = score_list
+
+    return all_lr_scores

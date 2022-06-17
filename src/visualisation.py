@@ -4,22 +4,25 @@ import matplotlib.pyplot as plt
 import torchvision.utils as vutils
 
 
-def plot_loss(G_losses, D_losses, PATH, save=False):
+def plot_loss(G_losses, D_losses, save_path, title_fontsize=12, x_fontsize=12, y_fontsize=12, yticks_size=10, 
+    xticks_size=10,save=False, show_plot=True):
     plt.figure(figsize=(10, 5))
-    plt.title("Generator and Discriminator Loss During Training")
+    plt.title("Generator and Discriminator Loss During Training",fontsize=title_fontsize)
     plt.plot(G_losses, label="G")
     plt.plot(D_losses, label="D")
-    plt.xlabel("iterations")
-    plt.ylabel("Loss")
-    plt.legend()
-
+    plt.xlabel("iterations",fontsize=x_fontsize)
+    plt.ylabel("Loss",fontsize=y_fontsize)
+    plt.legend(fontsize=y_fontsize)
+    plt.tight_layout()
+    plt.yticks(fontsize=yticks_size)
+    plt.xticks(fontsize=xticks_size)
     if save == True:
-        plt.savefig(PATH + 'img/loss', format="png", dpi=400)
+        plt.savefig(save_path , format="png")
+    if show_plot:
+        plt.show()
 
-    plt.show()
 
-
-def plot_realvsfake(dataloader, device, img_list, PATH, save=False):
+def plot_realvsfake(dataloader, device, img_list, save_path, save=False,show_plot=True):
     # Grab a batch of real images from the dataloader
     real_batch = next(iter(dataloader))
 
@@ -36,5 +39,6 @@ def plot_realvsfake(dataloader, device, img_list, PATH, save=False):
     plt.title("Fake Images")
     plt.imshow(np.transpose(img_list[-1], (1, 2, 0)))
     if save == True:
-        plt.savefig(PATH + 'img/real_vs_fake', format="png", dpi=400)
-    plt.show()
+        plt.savefig(save_path, format="png", dpi=400)
+    if show_plot:
+        plt.show()

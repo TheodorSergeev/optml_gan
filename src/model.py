@@ -1,5 +1,5 @@
 import torch.nn as nn
-
+import torch
 
 # Custom weights initialisation called on netG and netD
 def weights_init(m):
@@ -26,3 +26,10 @@ def init_net(model, device, ngpu):
     # Print the model
     # print(net)
     return net
+
+def load_G(ngpu, nc, nz, Generator, save_path_G, device):
+
+    netG = init_net(Generator(ngpu, nc, nz), device,ngpu)
+    netG.load_state_dict(torch.load(save_path_G))
+    netG.eval()
+    return netG
