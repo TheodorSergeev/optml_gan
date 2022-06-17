@@ -34,9 +34,6 @@ def show(imgs, save_path, save_fig, show_plot):
     if show_plot:
         plt.show()
 
-# plots
-
-
 def get_loss_plots(generated_data_path, list_paths, PATH,
                    plot_losses=True,
                    save_gen_samples=True, show_plot=True, save_fig=False):
@@ -73,24 +70,53 @@ def get_loss_plots(generated_data_path, list_paths, PATH,
             show([img.squeeze() for img in img_list_nogrid_2[:5]],
                  save_path, save_fig, show_plot)
 
+def color_for_lr(lr,
+                 color_dict={1e-07: 'C6',
+                             1e-06: 'C5',
+                             1e-05:'C4',
+                             0.0001: 'C3',
+                             0.001: 'C2',
+                             0.01: 'C1',
+                             0.1: 'C0'
+                             }
+                 ):
+
+    color = color_dict[lr]
+    return color
+
+
 def plot_FID(x,  # = [0, 50, 100, 150, 200, 250, 290]
-             y, save_fig, save_path, show_plot, x_fontsize=15, y_fontsize=15, yticks_size=15,
-              xticks_size=15,label_size=15):
+             y, save_fig, save_path, show_plot, handles=None, labels=None, x_fontsize=15, y_fontsize=15, yticks_size=15,
+              xticks_size=15,label_size=15, show_legend=True):
     
     fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 
     for key, value in zip(y.keys(), y.values()):
         ax.plot(x,
-                value, label='lr={:.0e}'.format(key))
+                value, label='lr={:.0e}'.format(key),color=color_for_lr(key))
+
+        print(key,color_for_lr(key))
+
+
+
+
 
     ax.set_ylabel('FID',fontsize=y_fontsize)
     ax.set_xlabel('epoch',fontsize=x_fontsize)
-
-    plt.legend(fontsize=label_size)
+    if show_legend:
+        if handles is not None:
+            fig.legend(handles, labels, fontsize=label_size)
+        else:
+            plt.legend(fontsize=label_size)
     plt.yticks(fontsize=yticks_size)
     plt.xticks(fontsize=xticks_size)
     plt.tight_layout()
+
+    handles, labels = ax.get_legend_handles_labels()
+    
+
     if save_fig == True:
         plt.savefig(save_path, format="pdf", dpi=400)
     if show_plot:
         plt.show()
+    return handles, labels
