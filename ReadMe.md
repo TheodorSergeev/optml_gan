@@ -69,7 +69,7 @@ conda install pytorch torchvision torchaudio cpuonly -c pytorch
 Folder structure:
 
 - `data`: This folder contains the MNIST dataset
-- `generated_data`: If the option to serialise models and stats when running a grid search is activated, the models are saved in different subfolders of this folder
+- `generated_data`: All the saved models and generated stats are save in this folder. The gridsearch experiments are saved here with a structured folder name
 - `img`: This folder contains the plots in the report, produced from the code in this repository
 - `src`: This folder contains the scripts required to run the experiments to generate the plots and results in our report
 - `run.py`: Script that produces the plots and results presented in the report 
