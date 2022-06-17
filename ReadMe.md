@@ -33,8 +33,8 @@ If you want to run the code directly from Google Colab:
 - Click on <a href="https://colab.research.google.com/github/TheodorSergeev/optml_gan/blob/main/gan.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> for  `gan.ipynb`
 - Click on <a href="https://colab.research.google.com/github/TheodorSergeev/optml_gan/blob/main/metrics.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a> for `metrics.ipynb`
 - Or open [this Google Drive folder](https://drive.google.com/drive/folders/17c7PySAorwY0P0VVEdMLnEwskU3yQMyT?usp=sharing)
- and open `gan.ipynb` or `metrics.ipynb` in Google Colab, the goold drive folder contains our saved experiments so that you wouldn't be required to train the models again (the gridsearch takes multiple hours even on a P100 GPU)
-- use the provided `run.py` file to run an experiment where a single gan is trained and outputs some plots into the img directory
+ and open `gan.ipynb` or `metrics.ipynb` in Google Colab, the goold drive folder contains our saved experiments so that you wouldn't be required to train the models again (the gridsearch takes multiple hours even on a P100 GPU). We recommend you download the files in this drive and place them in a folder with the same name in your own google drive.
+- You can also use the provided `run.py` file to run an experiment where a single gan is trained and outputs some plots into the img directory
 
 
 If you are running the code locally, you can create an Anaconda environment with the following commands. First create the environment:
@@ -68,7 +68,7 @@ conda install pytorch torchvision torchaudio cpuonly -c pytorch
 
 Folder structure:
 
-- `data`: This folder contains the datasets
+- `data`: This folder contains the MNIST dataset
 - `generated_data`: If the option to serialise models and stats when running a grid search is activated, the models are saved in different subfolders of this folder
 - `img`: This folder contains the plots in the report, produced from the code in this repository
 - `src`: This folder contains the scripts required to run the experiments to generate the plots and results in our report
