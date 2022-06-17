@@ -5,7 +5,7 @@ import torch
 import numpy as np
 from torch.nn.functional import adaptive_avg_pool2d
 from scipy import linalg
-
+import time
 try:
     from tqdm import tqdm
 except ImportError:
@@ -133,7 +133,7 @@ class InceptionV3(nn.Module):
 
         return outp
 
-def get_activations(isreal, dataloader, num_samples, model, dims=2048, device='cpu'):
+def get_activations(isreal, dataloader, num_samples, model, device, dims=2048):
     """Calculates the activations of the pool_3 layer for all images.
     Params:
     -- files       : List of image files paths
@@ -177,8 +177,9 @@ def get_activations(isreal, dataloader, num_samples, model, dims=2048, device='c
         start_idx = start_idx + pred.shape[0]
 
     return pred_arr
-def calculate_activation_statistics(isreal, dataloader, num_samples, model, dims=2048,
-                                    device='cpu'):
+
+def calculate_activation_statistics(isreal, dataloader, num_samples, model, device, dims=2048
+                                    ):
     """Calculation of the statistics used by the FID.
     Params:
 
@@ -196,10 +197,11 @@ def calculate_activation_statistics(isreal, dataloader, num_samples, model, dims
                the inception model.
     """
 
-    act = get_activations(isreal,dataloader, num_samples, model, dims, device)
+    act = get_activations(isreal, dataloader, num_samples, model, device, dims)
     mu = np.mean(act, axis=0)
     sigma = np.cov(act, rowvar=False)
     return mu, sigma
+
 def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
     """Numpy implementation of the Frechet Distance.
     The Frechet distance between two multivariate Gaussians X_1 ~ N(mu_1, C_1)
@@ -241,10 +243,33 @@ def calculate_frechet_distance(mu1, sigma1, mu2, sigma2, eps=1e-6):
 
 def calculate_frechet(device, real_dataloader, fake_dataloader, inception_model, num_samples) :
     mu_1, std_1 = calculate_activation_statistics(True, real_dataloader, num_samples,
-         inception_model, device=device)
+         inception_model, device)
     mu_2, std_2 = calculate_activation_statistics(False, fake_dataloader, num_samples,
-         inception_model, device=device)
+         inception_model, device)
 
     """get Frechet distance"""
     fid_value = calculate_frechet_distance(mu_1, std_1, mu_2, std_2)
     return fid_value
+
+
+def sample_gen_dataset(n_samples, batch_size, netG, nz, workers, device, shuffle=True):
+
+    with torch.no_grad():
+      noise = torch.randn(n_samples, nz, 1, 1, device=device)
+      fake = netG(noise)
+    fake = fake.to(device)
+    fake_dataset = torch.utils.data.TensorDataset(fake)
+    fake_dataloader = torch.utils.data.DataLoader(fake_dataset, batch_size=batch_size,
+                                         shuffle=shuffle, num_workers=workers)
+    return fake_dataloader
+
+def calculate_fid(num_samples, real_dataloader, batch_size_eval, device, inception_model, netG, nz, workers):
+    with torch.no_grad():
+        # sample the generator (and output a dataset from that)
+        fake_dataloader = sample_gen_dataset(num_samples, batch_size_eval, netG, nz, workers, device, shuffle=True)
+
+        t_frechet = time.time()
+        frechet_dist = calculate_frechet(device, real_dataloader, fake_dataloader, inception_model, num_samples) 
+        print('frechet dist:', frechet_dist,'| time to calculate :',time.time()-t_frechet,'s')
+        
+    return frechet_dist

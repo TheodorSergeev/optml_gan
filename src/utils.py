@@ -27,6 +27,7 @@ def generate_paths(PATH, extra_word, loss_name, lrD, lrG, beta1, iter_dis, iter_
         str(iter_dis) + '_itg' + str(iter_gen) + \
         '_gpv' + str(grad_penalty_coef) + '_'
 
+    print(PATH, extra_word, param_str)
     experiment_path = PATH + "generated_data/" + extra_word + param_str
 
     models_path = experiment_path + '/models/'

@@ -21,10 +21,10 @@ def run_experiment(ngpu, device, dataset, workers,
                    loss_name, experiment_prefix, save_stats, create_dir,
                    iter_per_epoch_dis, iter_per_epoch_gen, grad_penalty_coef,
                    save_epochs, save_models, momentumD, momentumG, optimizer_name,
-                   PATH=None, img_list=None, G_losses=None, D_losses=None):
+                   PATH, img_list=None, G_losses=None, D_losses=None):
 
-    netG = init_net(Generator(ngpu, nc, nz), device)
-    netD = init_net(Discriminator(ngpu, nc, loss_name), device)
+    netG = init_net(Generator(ngpu, nc, nz), device, ngpu)
+    netD = init_net(Discriminator(ngpu, nc, loss_name), device, ngpu)
 
     # Create the dataloader
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,
@@ -36,10 +36,10 @@ def run_experiment(ngpu, device, dataset, workers,
     experiment_prefix = experiment_prefix + optimizer_name + \
         '_mG'+str(momentumD) + '_mD'+str(momentumG) + '_'
 
-    gan_training = Training(loss_name, netD, netG, device, real_label, fake_label,
-                            dataloader, num_epochs, fixed_noise,
-                            lrD, lrG, beta1, experiment_prefix, save_models, PATH, save_stats, create_dir,
-                            iter_per_epoch_dis, iter_per_epoch_gen, grad_penalty_coef, optimizerD, optimizerG, save_epochs=save_epochs)
+    gan_training = Training(loss_name, netD, netG, device, real_label, fake_label, dataloader, num_epochs,
+                 fixed_noise, lrD, lrG, beta1, experiment_prefix, save_models,
+                 PATH, save_stats, create_dir, iter_per_epoch_dis, iter_per_epoch_gen, grad_penalty_coef,
+                 optimizerD, optimizerG, save_epochs=10)
 
     stats = gan_training.train()
 
@@ -51,7 +51,7 @@ def grid_search(ngpu, device, dataset, workers,
                 num_epochs_list, loss_name_list, optimizer_name_list,
                 beta1_list, lr_list, momentums_list, plot, save_stats, create_dir,
                 save_epochs, save_models, manualSeed, nc, nz,
-                PATH=None, img_list=None, G_losses=None, D_losses=None):
+                PATH, img_list=None, G_losses=None, D_losses=None):
 
     for batch_size in batch_size_list:
         for shuffle in shuffle_list:

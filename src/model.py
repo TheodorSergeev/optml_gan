@@ -24,5 +24,5 @@ def init_net(model, device, ngpu):
     # net.apply(weights_init)
 
     # Print the model
-    print(net)
+    # print(net)
     return net
