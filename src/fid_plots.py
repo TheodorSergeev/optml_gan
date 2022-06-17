@@ -8,7 +8,12 @@ from .fid import *
 from .serialisation import *
 from matplotlib import gridspec
 
+
 def show(imgs, save_path, save_fig, show_plot):
+    '''
+    Function used by get_loss_plots to genrate the 1x5 plots 
+    of fake samples
+    '''
     if not isinstance(imgs, list):
         imgs = [imgs]
 
@@ -34,9 +39,14 @@ def show(imgs, save_path, save_fig, show_plot):
     if show_plot:
         plt.show()
 
+
 def get_loss_plots(generated_data_path, list_paths, PATH,
                    plot_losses=True,
                    save_gen_samples=True, show_plot=True, save_fig=False):
+    '''
+    This function loads the saved stat files in generated_data and plots the
+    generator and discriminator loss, and also plots fake samples from the generator
+    '''
 
     for path in list_paths:
         folder = path[17:]
@@ -70,39 +80,44 @@ def get_loss_plots(generated_data_path, list_paths, PATH,
             show([img.squeeze() for img in img_list_nogrid_2[:5]],
                  save_path, save_fig, show_plot)
 
+
 def color_for_lr(lr,
                  color_dict={1e-07: 'C6',
                              1e-06: 'C5',
-                             1e-05:'C4',
+                             1e-05: 'C4',
                              0.0001: 'C3',
                              0.001: 'C2',
                              0.01: 'C1',
                              0.1: 'C0'
                              }
                  ):
-
+    '''
+    returns correct color for a label in plot_FID
+    '''
     color = color_dict[lr]
     return color
 
 
 def plot_FID(x,  # = [0, 50, 100, 150, 200, 250, 290]
              y, save_fig, save_path, show_plot, handles=None, labels=None, x_fontsize=15, y_fontsize=15, yticks_size=15,
-              xticks_size=15,label_size=15, show_legend=True):
-    
+             xticks_size=15, label_size=15, show_legend=True):
+    '''
+    FID plots
+    Input 
+        x(list) : contains epochs at which FID was evaluated
+        y(dict) : one of all_lr_scores_xxx where xxx is either adam, rmsprop or sgd
+                  this dict can be loaded form the saved file all_lr_scores_xxx.pkl
+    Output
+        handles, labels : to be used if multiple plots with same label are desired
+    '''
     fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 
     for key, value in zip(y.keys(), y.values()):
         ax.plot(x,
-                value, label='lr={:.0e}'.format(key),color=color_for_lr(key))
+                value, label='lr={:.0e}'.format(key), color=color_for_lr(key))
 
-        print(key,color_for_lr(key))
-
-
-
-
-
-    ax.set_ylabel('FID',fontsize=y_fontsize)
-    ax.set_xlabel('epoch',fontsize=x_fontsize)
+    ax.set_ylabel('FID', fontsize=y_fontsize)
+    ax.set_xlabel('epoch', fontsize=x_fontsize)
     if show_legend:
         if handles is not None:
             fig.legend(handles, labels, fontsize=label_size)
@@ -113,7 +128,6 @@ def plot_FID(x,  # = [0, 50, 100, 150, 200, 250, 290]
     plt.tight_layout()
 
     handles, labels = ax.get_legend_handles_labels()
-    
 
     if save_fig == True:
         plt.savefig(save_path, format="pdf", dpi=400)

@@ -1,6 +1,7 @@
 import torch
 
 
+''' Different loss functions that can be used to train gans, finally only wassertein loss was loss'''
 # stability constant
 EPS = 1e-15
 

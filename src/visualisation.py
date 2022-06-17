@@ -6,6 +6,9 @@ import torchvision.utils as vutils
 
 def plot_loss(G_losses, D_losses, save_path, title_fontsize=12, x_fontsize=12, y_fontsize=12, yticks_size=10,
               xticks_size=10, save=False, show_plot=True):
+    '''
+    plots the loss of the generator and discriminator over training iterations
+    '''
     plt.figure(figsize=(10, 5))
     plt.title("Generator and Discriminator Loss During Training",
               fontsize=title_fontsize)
@@ -24,6 +27,8 @@ def plot_loss(G_losses, D_losses, save_path, title_fontsize=12, x_fontsize=12, y
 
 
 def plot_realvsfake(dataloader, device, img_list, save_path, save=False, show_plot=True):
+    ''' plot a 8x8 grid of real mnist images next to 9x9 fakes generated images '''
+
     # Grab a batch of real images from the dataloader
     real_batch = next(iter(dataloader))
 

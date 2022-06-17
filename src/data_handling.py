@@ -10,7 +10,16 @@ import torchvision.utils as vutils
 # see https://stackoverflow.com/questions/65528568/how-do-i-load-the-celeba-dataset-on-google-colab-using-torch-vision-without-ru
 
 def get_dataset(name, image_size, dataroot):
-    # torchvision dataset
+    ''' Load either mnist or cifar10 as a dataset
+
+    Input:
+        name(str): either cifar10 or mnist
+        image_size(int): 28 for mnist and 32 for cifar
+        dataroot(str): where to save or where the datasets are already
+    Output:
+        dataset(torch.Dataset): 
+        nc(int): numebr of channels
+    '''
     dataset = None
 
     # number of channels in the training images (3 for colour, 1 for grayscale)
@@ -49,7 +58,7 @@ def get_dataset(name, image_size, dataroot):
 
 
 def plot_img(dataloader, dataset_name, device, PATH):
-    # Plot some training images
+    ''' Plot some training images'''
     real_batch = next(iter(dataloader))
     plt.figure(figsize=(8, 8))
     plt.axis("off")
