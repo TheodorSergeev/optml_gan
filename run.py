@@ -1,6 +1,7 @@
+from __future__ import print_function
 # from src.file import *
 PATH = './'
-from __future__ import print_function
+
 
 import time
 

@@ -23,7 +23,7 @@ from .model import *
 # this didn't use batches, it was limited to one batch
 # https://github.com/mseitzer/pytorch-fid
 # https://github.com/mseitzer/pytorch-fid/blob/master/src/pytorch_fid/fid_score.py
-# this was deigned to be run from the command line, and to take images in a folder as input
+# this was designed to be run from the command line, and to take images in a folder as input
 # we wanted to be able to run this from a samples created during runtime, rather than in
 # a folder
 
@@ -31,7 +31,7 @@ from .model import *
 class InceptionV3(nn.Module):
     """Pretrained InceptionV3 network returning feature maps"""
 
-    # Index of default block of inception to return,
+    # Index of the default block of inception to return,
     # corresponds to output of final average pooling
     DEFAULT_BLOCK_INDEX = 3
 
