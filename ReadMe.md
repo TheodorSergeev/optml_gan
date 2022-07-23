@@ -72,5 +72,6 @@ Folder structure:
 - `generated_data`: All the saved models and generated stats are save in this folder. The gridsearch experiments are saved here with a structured folder name
 - `img`: This folder contains the plots in the report, produced from the code in this repository
 - `src`: This folder contains the scripts required to run the experiments to generate the plots and results in our report
+- `report.pdf`: Final report that describes the study and presents the results 
 - `run.py`: Script that produces the plots and results presented in the report 
 - `dcgan.ipynb`: Contains the code to produce the plots and results presented in the report with more in-depth explanations
