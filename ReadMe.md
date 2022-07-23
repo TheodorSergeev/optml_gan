@@ -1,4 +1,4 @@
-# Project Title
+# Study of Optimiser Performance for Wasserstein Loss Function in Generative Adversarial Networks
 
 ## Description
 
